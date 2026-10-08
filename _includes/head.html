@@ -10,7 +10,30 @@
     figure img { width: 100%; height: auto; }
     figcaption { font-size: 0.85em; color: #59636e; margin-top: 0.4em; }
     .post-content table { font-size: 0.92em; }
+    .chart-tip { position: fixed; z-index: 10; display: none; pointer-events: none; max-width: 320px;
+      background: #1f2328; color: #fff; font-size: 12px; line-height: 1.4; padding: 5px 8px; border-radius: 4px; }
   </style>
+  <script>
+    // Tooltips for chart points: any element with data-tip shows it on hover (desktop) or tap (touch).
+    document.addEventListener('DOMContentLoaded', function () {
+      var tip = document.createElement('div');
+      tip.className = 'chart-tip';
+      document.body.appendChild(tip);
+      function show(e) {
+        var el = e.target.closest ? e.target.closest('[data-tip]') : null;
+        if (!el) { tip.style.display = 'none'; return; }
+        tip.textContent = el.getAttribute('data-tip');
+        tip.style.display = 'block';
+        var x = e.clientX + 12, y = e.clientY + 12, w = tip.offsetWidth;
+        if (x + w > window.innerWidth - 8) x = e.clientX - w - 12;
+        tip.style.left = x + 'px';
+        tip.style.top = y + 'px';
+      }
+      document.addEventListener('mousemove', show);
+      document.addEventListener('click', show);
+      window.addEventListener('scroll', function () { tip.style.display = 'none'; });
+    });
+  </script>
   {%- if page.math -%}
   <script>
     window.MathJax = { tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] } };

@@ -51,8 +51,8 @@ def winrate_svg():
     o.append(f"<path d='{path}' fill='none' stroke='{MUTED}' stroke-width='2'/>")
     for d, v, key, ly, an, date, idea in WINRATE:
         fill = ACCENT if key and key != "Start" else MUTED
-        # Hover: a <title> tooltip on a larger transparent hit area (works when the SVG is inlined).
-        o.append(f"<g style='cursor:default'><title>{date}: {idea} — {v}% win rate</title>"
+        # Hover/tap: data-tip is shown by the tooltip script in _includes/head.html; r=9 transparent hit area.
+        o.append(f"<g data-tip='{date}: {idea} — {v}% win rate' style='cursor:pointer'>"
                  f"<circle cx='{x(d):.1f}' cy='{y(v):.1f}' r='{5 if key else 3}' fill='{fill}'/>"
                  f"<circle cx='{x(d):.1f}' cy='{y(v):.1f}' r='9' fill='transparent'/></g>")
         if key:

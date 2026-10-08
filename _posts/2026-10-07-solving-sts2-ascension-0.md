@@ -10,7 +10,7 @@ This is a write up of my personal project: Building an AI to play Slay the Spire
 I started this project in March 2026. When I started, "solving" STS2 still seemed out of reach beyond my wildest imagination. Sts1 has been out for 7 years and many AI attempts have been made, but none was convincing. I was inspired to post this after seeing Jorb's recent post.
 
 
-*Headline first*: The autonomous agent now wins about 87% of Ironclad runs at Ascension 0, up from about 10% in August 2026. I consider A0 effectively solved and are declaring Milestone 1 complete.
+*Headline first*: The autonomous agent now wins about 87% of Ironclad runs at Ascension 0, up from about 10% in August 2026. I consider A0 effectively solved and am declaring Milestone 1 complete.
 
 *Important caveat*: This AI does "cheat" via "save scumming". The game engine is identical to the real game, including all deterministic rollouts, so the agent knows exactly what cards will be drawn the next turn, etc. Technically, humans have access to this information as well, via save scumming. This was an early decision -- I wanted to make the problem easier first. Future milestones will aim at removing this extra information.
 
