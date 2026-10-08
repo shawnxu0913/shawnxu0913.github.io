@@ -12,6 +12,8 @@ I started this project in March 2026. When I started, "solving" STS2 still seeme
 
 *Headline first*: The autonomous agent now wins about 87% of Ironclad runs at Ascension 0, up from about 10% in August 2026. I consider A0 effectively solved and am declaring Milestone 1 complete.
 
+*The runs*: I've published every run from a fresh batch of 4,960 random seeds, losses included, with each action and the game state after it recorded: [4,251 wins out of 4,960 (85.7%)](https://github.com/shawnxu0913/sts2ai-runs/releases/tag/v1.0). The format is described in the [repository's README](https://github.com/shawnxu0913/sts2ai-runs).
+
 *Important caveat*: This AI does "cheat" via "save scumming". The game engine is identical to the real game, including all deterministic rollouts, so the agent knows exactly what cards will be drawn the next turn, etc. Technically, humans have access to this information as well, via save scumming. This was an early decision -- I wanted to make the problem easier first. Future milestones will aim at removing this extra information.
 
 ## The result
