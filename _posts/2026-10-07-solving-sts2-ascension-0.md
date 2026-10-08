@@ -5,14 +5,20 @@ date: 2026-10-07
 author: Shawn Xu
 math: true
 ---
+This is a write up of my personal project: Building an AI to play Slay the Spire 2. Building autonomous AI agents to play games has always been a hobby of mine, and in the past I've made AIs to play chess, poker, scrabble, RTS video games, and various other projects. Another motivation is that I wanted to gauge how well frontier LLM agents can (largely) navigate an open machine learning problem such as this one (my day job involves training LLM agents at one of the frontier labs). I've used Claude and Gemini extensively in this project as research partners and coders. However, note that I am not interested in using an LLM *itself* to act as the game agent, even though they will eventually get there. Instead, this project aims at using LLMs to build a *small* game AI.
 
-Our autonomous agent now wins about 87% of Ironclad runs at Ascension 0, up from about 10% in August 2026. We consider A0 effectively solved and are declaring Milestone 1 complete.
+I started this project in March 2026. When I started, "solving" STS2 still seemed out of reach beyond my wildest imagination. Sts1 has been out for 7 years and many AI attempts have been made, but none was convincing. I was inspired to post this after seeing Jorb's recent post.
+
+
+*Headline first*: The autonomous agent now wins about 87% of Ironclad runs at Ascension 0, up from about 10% in August 2026. I consider A0 effectively solved and are declaring Milestone 1 complete.
+
+*Important caveat*: This AI does "cheat" via "save scumming". The game engine is identical to the real game, including all deterministic rollouts, so the agent knows exactly what cards will be drawn the next turn, etc. Technically, humans have access to this information as well, via save scumming. This was an early decision -- I wanted to make the problem easier first. Future milestones will aim at removing this extra information.
 
 ## The result
 
 <figure>
-  <img src="{{ '/assets/img/winrate.svg' | relative_url }}" alt="Win rate rose from 10% to 87% in six weeks">
-  <figcaption>Fleet A/B tests, Aug 28 – Oct 7 2026; promoted arm of each test, about 1,000 seeds per arm.</figcaption>
+{% include figures/winrate.svg %}
+  <figcaption>Fleet A/B tests, Aug 28 – Oct 7 2026; promoted arm of each test, about 1,000 seeds per arm. Hover a point to see the change it shipped.</figcaption>
 </figure>
 
 Three ideas account for most of the climb: choosing events by their measured effect on winning, simulating each fight before playing it, and the turn beam. Every point is a change that won a paired test against the agent before it.
@@ -24,7 +30,7 @@ The agent is a stack of separate components: combat is solved by search, and the
 **Combat**
 
 - **Combat search agent.** A 3-turn lookahead search over card plays, targets and card-selection prompts, run inside an exact copy of the game engine. It branches on every meaningful choice and undoes moves with an undo log.
-- **Learned leaf evaluation.** A gradient-boosted model predicts the HP the player will end the fight with, from the board state (hand, piles, powers, enemy intents, potions). Search uses it to score positions three turns out.
+- **Learned leaf evaluation.** A [gradient-boosted](https://en.wikipedia.org/wiki/Gradient_boosting) model predicts the HP the player will end the fight with, from the board state (hand, piles, powers, enemy intents, potions). Search uses it to score positions three turns out.
 - **Playout gate.** At the start of each fight, the agent plays the whole fight out in simulation with its default strategy. If that playout dies, it tries a ladder of alternative strategies (deeper search, racing the enemy, drinking potions) and adopts the first one that wins. The winning line is cached and replayed turn by turn.
 - **Turn beam.** The last rungs of that ladder. Instead of committing to one plan per turn, it keeps the best 40 to 80 end-of-turn positions alive across turns. This finds setup turns and burst windows that look bad in the short term, which the per-turn search prunes away. Three score variants (racing, scaling, wider) cover fights the default misses.
 
@@ -57,7 +63,7 @@ a^{*} = \arg\max_{\pi \in \Pi_{3}(s_0)} \hat{V}\big(s^{\pi}\big), \qquad
 \hat{V}(s) = \begin{cases} \mathrm{HP}(s) & \text{fight won} \\ -\infty & \text{player dead} \\ \mathrm{HP}(s) + g_{\theta}(\phi(s)) & \text{otherwise} \end{cases}
 $$
 
-Here $$\Pi_3(s_0)$$ is the set of action sequences covering the next three turns, $$\phi(s)$$ is a feature vector of the board (hand, piles, powers, enemy intents, potions), and $$g_\theta$$ is a gradient-boosted tree model trained to predict the HP still to be lost, $$\mathrm{HP}_{\text{final}} - \mathrm{HP}(s)$$. The search re-plans every turn.
+Here $$\Pi_3(s_0)$$ is the set of action sequences covering the next three turns, $$\phi(s)$$ is a feature vector of the board (hand, piles, powers, enemy intents, potions), and $$g_\theta$$ is a [gradient-boosted tree](https://en.wikipedia.org/wiki/Gradient_boosting) model trained to predict the HP still to be lost, $$\mathrm{HP}_{\text{final}} - \mathrm{HP}(s)$$. The search re-plans every turn.
 
 **Playout gate.** Before the first turn, the agent plays the entire fight out under an ordered list of strategies $$\sigma_1, \dots, \sigma_K$$. Each playout returns whether it won, the final HP and how many turns it survived. The agent adopts the first strategy that wins (or, if none does, the one that survived longest) and replays its line turn by turn:
 
@@ -155,6 +161,7 @@ Claude also worked as an offline teacher. It played fights the agent had lost, t
 
 About 13% of runs are still lost, half of them at the final boss. The open problems:
 
+- **Removing save scumming.** Future milestones will only be published if the agent wins without knowing the random rollouts.
 - **Entry HP into bosses.** Arriving with 10 more HP turns about a third of the fights we lose into wins. We are testing a gate that picks the line that keeps the most HP in ordinary fights before a boss.
 - **Teaching the leaf evaluation.** The turn beam's winning lines can train the evaluation model, so the everyday search finds these lines without the slow fallback.
 - **Higher Ascensions and other characters.** Milestone 1 covers the Ironclad at Ascension 0. Higher Ascensions add harder enemies and fewer resources, and the other characters need their own card knowledge.

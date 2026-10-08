@@ -12,17 +12,23 @@ FONT = "font-family='-apple-system, Segoe UI, Helvetica, Arial, sans-serif'"
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "assets", "img")
 
 # Promoted arm's win rate in each fleet A/B test (Ironclad, Ascension 0).
-# (day since Aug 28 2026, win rate %, label or "", label dy, label anchor)
+# (day since Aug 28 2026, win rate %, label or "", label dy, label anchor, date, change shipped)
 WINRATE = [
-    (0, 9.6, "Start", 4, "end"),
-    (1, 13.6, "", 0, ""), (1.5, 15.8, "", 0, ""), (2, 18.5, "", 0, ""),
-    (13, 24.4, "", 0, ""), (19, 27.7, "", 0, ""), (25, 33.6, "", 0, ""),
-    (26, 52.5, "Event table", -12, "end"),
-    (27, 49.7, "", 0, ""), (31, 46.6, "", 0, ""),
-    (32, 66.4, "Playout gate", -12, "end"),
-    (33, 70.0, "", 0, ""), (37, 77.7, "", 0, ""),
-    (40, 82.4, "Turn beam", 12, "start"),
-    (40.6, 87.0, "Beam variants", -4, "start"),
+    (0, 9.6, "Start", 4, "end", "Aug 28", "Baseline before survival-based route planning"),
+    (1, 13.6, "", 0, "", "Aug 29", "Per-floor replanning + engine-forked route enumeration"),
+    (1.5, 15.8, "", 0, "", "Aug 29", "Joint deck-value scorer"),
+    (2, 18.5, "", 0, "", "Aug 30", "Future-boss survival in route value"),
+    (13, 24.4, "", 0, "", "Sep 10", "Potion-aware leaf evaluation"),
+    (19, 27.7, "", 0, "", "Sep 16", "Forkrank card picks"),
+    (25, 33.6, "", 0, "", "Sep 22", "Forkrank retrained on its own runs"),
+    (26, 52.5, "Event table", -12, "end", "Sep 23", "Causal event table"),
+    (27, 49.7, "", 0, "", "Sep 24", "Planner uses the same pick model"),
+    (31, 46.6, "", 0, "", "Sep 28", "Relics over cards in shops"),
+    (32, 66.4, "Playout gate", -12, "end", "Sep 29", "Playout gate"),
+    (33, 70.0, "", 0, "", "Sep 30", "Potion and racing fallback rungs"),
+    (37, 77.7, "", 0, "", "Oct 4", "Strict defensive potions"),
+    (40, 82.4, "Turn beam", 12, "start", "Oct 7", "Turn beam"),
+    (40.6, 87.0, "Beam variants", -4, "start", "Oct 7", "Turn-beam variants"),
 ]
 
 
@@ -30,6 +36,7 @@ def winrate_svg():
     x = lambda d: 70 + d / 41 * 560
     y = lambda v: 330 - v / 100 * 250
     o = [f"<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 760 370' {FONT} font-size='12' role='img' "
+         "style='width:100%;height:auto;display:block' "
          f"aria-label='Win rate rose from 10% to 87% in six weeks'>",
          "<rect width='760' height='370' fill='white'/>",
          f"<text x='20' y='26' font-size='16' font-weight='600' fill='{INK}'>Win rate rose from 10% to 87% in six weeks</text>",
@@ -42,9 +49,12 @@ def winrate_svg():
         o.append(f"<text x='{x(d)}' y='352' text-anchor='middle' fill='{QUIET}'>{t}</text>")
     path = " ".join(("M" if i == 0 else "L") + f"{x(d):.1f} {y(v):.1f}" for i, (d, v, *_) in enumerate(WINRATE))
     o.append(f"<path d='{path}' fill='none' stroke='{MUTED}' stroke-width='2'/>")
-    for d, v, key, ly, an in WINRATE:
+    for d, v, key, ly, an, date, idea in WINRATE:
         fill = ACCENT if key and key != "Start" else MUTED
-        o.append(f"<circle cx='{x(d):.1f}' cy='{y(v):.1f}' r='{5 if key else 3}' fill='{fill}'/>")
+        # Hover: a <title> tooltip on a larger transparent hit area (works when the SVG is inlined).
+        o.append(f"<g style='cursor:default'><title>{date}: {idea} — {v}% win rate</title>"
+                 f"<circle cx='{x(d):.1f}' cy='{y(v):.1f}' r='{5 if key else 3}' fill='{fill}'/>"
+                 f"<circle cx='{x(d):.1f}' cy='{y(v):.1f}' r='9' fill='transparent'/></g>")
         if key:
             lx = x(d) + (-10 if an == "end" else 12)
             col = QUIET if key == "Start" else ACCENT
@@ -94,8 +104,15 @@ def architecture_svg():
     return "\n".join(o)
 
 
+INC = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "_includes", "figures")
+
 if __name__ == "__main__":
     os.makedirs(OUT, exist_ok=True)
+    os.makedirs(INC, exist_ok=True)
+    # Inlined into the post (hover tooltips only work on inline SVG, not through <img>).
+    with open(os.path.join(INC, "winrate.svg"), "w", encoding="utf-8") as f:
+        f.write(winrate_svg())
+    print("wrote", os.path.normpath(os.path.join(INC, "winrate.svg")))
     for name, svg in (("winrate.svg", winrate_svg()), ("architecture.svg", architecture_svg())):
         with open(os.path.join(OUT, name), "w", encoding="utf-8") as f:
             f.write(svg)
