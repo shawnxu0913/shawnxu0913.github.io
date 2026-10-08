@@ -7,7 +7,7 @@ math: true
 ---
 This is a write up of my personal project: Building an AI to play Slay the Spire 2. Building autonomous AI agents to play games has always been a hobby of mine, and in the past I've made AIs to play chess, poker, scrabble, RTS video games, and various other projects. Another motivation is that I wanted to gauge how well frontier LLM agents can (largely) navigate an open machine learning problem such as this one (my day job involves training LLM agents at one of the frontier labs). I've used Claude and Gemini extensively in this project as research partners and coders. However, note that I am not interested in using an LLM *itself* to act as the game agent, even though they will eventually get there. Instead, this project aims at using LLMs to build a *small* game AI.
 
-I started this project in March 2026. When I started, "solving" STS2 still seemed out of reach beyond my wildest imagination. Sts1 has been out for 7 years and many AI attempts have been made, but none was convincing. I was inspired to post this after seeing [Jorb's recent post](https://www.reddit.com/r/slaythespire/comments/1vxfsf4/jorbs_actually_built_a_fight_solver_for_sts_2/).
+I started this project in March 2026. When I started, "solving" STS2 still seemed out of reach beyond my wildest imagination. Sts1 has been out for 7 years and many AI attempts have been made, but none was convincing. I was inspired to post this after seeing [Jorbs' recent post](https://www.reddit.com/r/slaythespire/comments/1vxfsf4/jorbs_actually_built_a_fight_solver_for_sts_2/).
 
 
 *Headline first*: The autonomous agent now wins about 87% of Ironclad runs at Ascension 0, up from about 10% in August 2026. I consider A0 effectively solved and am declaring Milestone 1 complete.
