@@ -92,6 +92,28 @@ $$
 
 **Event table.** For each event and option, the table stores the estimated effect of choosing that option on the chance of winning, measured by forking the run at the event and continuing with each option. Only the event's first step is used, which avoided push-your-luck chains that looked good on average but lost runs.
 
+### Future direction: playing with only what a player can see
+
+Everything above searches the exact engine, random number generator included. Inside a search, the agent therefore knows things a human player cannot: the order of the draw pile, which cards a potion or event will generate, and the enemies' moves beyond the intent shown for the next turn. A natural next step is an agent that plays with only the information a real player has, which also makes the comparison with human play fair.
+
+Formally, a fight becomes a partially observable problem. The player sees an observation $$o$$: the hand, the contents (but not the order) of the draw and discard piles, HP, powers, potions, and each enemy's current intent. The true state $$s$$ adds the hidden part, mainly the generator's state. The agent keeps a belief $$b(s \mid o)$$ over the states consistent with what it has seen.
+
+The simplest change is **determinization**: sample $$K$$ plausible worlds from the belief (shuffle the draw pile, reseed the generator, keep everything observed), search each one with the existing engine, and pick the action that does best on average:
+
+$$
+a^{*} = \arg\max_{a} \; \frac{1}{K} \sum_{k=1}^{K} \hat{V}\big(f_k(s_k, a)\big), \qquad s_k \sim b(\,\cdot \mid o)
+$$
+
+Each component would change accordingly:
+
+- **Combat search** turns end-of-turn draws into chance nodes. Searching each sampled world separately is cheap to build but can assume it will know the future once it gets there. Searching over information sets, so that one plan has to work across all the worlds (information-set Monte Carlo tree search), fixes that at a higher cost.
+- **The leaf evaluation** needs no retraining in principle. Its features are mostly observable already; the hidden draw order would be removed.
+- **The playout gate** can no longer adopt the first strategy that wins one deterministic playout. It would play each strategy out in $$K$$ sampled worlds, adopt the one with the highest estimated chance of winning, $$\hat{p}(\sigma) = \tfrac{1}{K}\sum_k \mathrm{won}_k(\sigma)$$, and re-plan every turn instead of replaying a cached line.
+- **The turn beam** would score each end-of-turn state by its average over sampled worlds, so a setup turn survives only if it pays off in most of them.
+- **Between fights**, the planner and forkrank also fork the true engine and see future card rewards and event outcomes. They would sample those futures too; forkrank's training labels would come from many continuations per option rather than one.
+
+The cost is roughly $$K$$ times more compute per decision, and some loss of win rate from no longer knowing the future. Measuring that gap with the same paired A/B tests would tell us how much of the 87% depends on hidden information, and how much an honest agent can recover.
+
 ### Deciding what ships
 
 Each change runs against the current agent on the same 1,000 seeds. With $$b$$ runs rescued (new wins) and $$c$$ runs thrown (new losses), it ships when a continuity-corrected McNemar test is significant and it still comes out ahead with unfinished runs counted as losses:
