@@ -1,0 +1,44 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 760 488' font-family='-apple-system, Segoe UI, Helvetica, Arial, sans-serif' font-size='13' role='img' aria-label='Learned models plan the run; search plays each fight'>
+<rect width='760' height='488' fill='white'/>
+<defs><marker id='a' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='6' markerHeight='6' orient='auto-start-reverse'><path d='M0 0L10 5L0 10z' fill='#9a9a92'/></marker></defs>
+<text x='24' y='32' font-size='15' font-weight='600' fill='#1f2328'>Learned models plan the run; search plays each fight</text>
+<rect x='24' y='56' width='336' height='352' rx='8' fill='#f3f3f1' stroke='#9a9a92'/>
+<text x='40' y='80' font-weight='600' fill='#59636e'>Between fights</text>
+<rect x='400' y='56' width='336' height='352' rx='8' fill='#f3f3f1' stroke='#9a9a92'/>
+<text x='416' y='80' font-weight='600' fill='#59636e'>In each fight</text>
+<rect x='40' y='96' width='304' height='56' rx='8' fill='white' stroke='#9a9a92' stroke-width='1.25'/>
+<text x='56' y='120' font-weight='600' fill='#1f2328'>Act path planner</text>
+<text x='56' y='138' font-size='11.5' fill='#59636e'>Searches map routes; replans every floor</text>
+<rect x='40' y='176' width='304' height='56' rx='8' fill='white' stroke='#9a9a92' stroke-width='1.25'/>
+<text x='56' y='200' font-weight='600' fill='#1f2328'>Forkrank card picks</text>
+<text x='56' y='218' font-size='11.5' fill='#59636e'>Learned from forked runs; floor 17 on</text>
+<rect x='40' y='256' width='304' height='56' rx='8' fill='white' stroke='#9a9a92' stroke-width='1.25'/>
+<text x='56' y='280' font-weight='600' fill='#1f2328'>Causal event table</text>
+<text x='56' y='298' font-size='11.5' fill='#59636e'>Picks options by measured effect on winning</text>
+<rect x='40' y='336' width='304' height='56' rx='8' fill='white' stroke='#9a9a92' stroke-width='1.25'/>
+<text x='56' y='360' font-weight='600' fill='#1f2328'>Shop, potions, rest</text>
+<text x='56' y='378' font-size='11.5' fill='#59636e'>Relics over cards; potions on lethal hits</text>
+<rect x='416' y='96' width='304' height='56' rx='8' fill='white' stroke='#9a9a92' stroke-width='1.25'/>
+<text x='432' y='120' font-weight='600' fill='#1f2328'>Playout gate</text>
+<text x='432' y='138' font-size='11.5' fill='#59636e'>Simulates the whole fight before turn one</text>
+<rect x='416' y='176' width='304' height='56' rx='8' fill='white' stroke='#9a9a92' stroke-width='1.25'/>
+<text x='432' y='200' font-weight='600' fill='#1f2328'>Combat search (default)</text>
+<text x='432' y='218' font-size='11.5' fill='#59636e'>3-turn lookahead, learned leaf evaluation</text>
+<rect x='416' y='256' width='304' height='56' rx='8' fill='white' stroke='#9a9a92' stroke-width='1.25'/>
+<text x='432' y='280' font-weight='600' fill='#1f2328'>Fallback strategies</text>
+<text x='432' y='298' font-size='11.5' fill='#59636e'>Deeper, racing and potion-drinking arms</text>
+<rect x='416' y='336' width='304' height='56' rx='8' fill='white' stroke='#9a9a92' stroke-width='1.25'/>
+<text x='432' y='360' font-weight='600' fill='#1f2328'>Turn beam</text>
+<text x='432' y='378' font-size='11.5' fill='#59636e'>Keeps 40 to 80 end-of-turn states; 4 variants</text>
+<path d='M344 124H416' fill='none' stroke='#9a9a92' stroke-width='1.25' marker-end='url(#a)'/>
+<path d='M568 152V176' fill='none' stroke='#9a9a92' stroke-width='1.25' marker-end='url(#a)'/>
+<path d='M568 232V256' fill='none' stroke='#9a9a92' stroke-width='1.25' marker-end='url(#a)'/>
+<path d='M568 312V336' fill='none' stroke='#9a9a92' stroke-width='1.25' marker-end='url(#a)'/>
+<path d='M192 408V424M568 408V424' stroke='#9a9a92' stroke-width='1.25'/>
+<text x='380' y='116' text-anchor='middle' font-size='11.5' fill='#59636e'>fight</text>
+<text x='578' y='168' font-size='11.5' fill='#59636e'>tries first</text>
+<text x='578' y='248' font-size='11.5' fill='#59636e'>if it dies</text>
+<text x='578' y='328' font-size='11.5' fill='#59636e'>if all of them die</text>
+<rect x='24' y='424' width='712' height='40' rx='8' fill='white' stroke='#9a9a92' stroke-width='1.25'/>
+<text x='380' y='449' text-anchor='middle' font-weight='600' fill='#1f2328'>Simulator built from the game&#8217;s own code: fork, simulate, rewind</text>
+</svg>

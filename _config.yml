@@ -1,0 +1,28 @@
+title: Shawn Xu
+author:
+  name: Shawn Xu
+description: >-
+  Notes on building game-playing agents.
+url: "https://shawnxu0913.github.io"
+baseurl: ""
+
+theme: minima
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+
+markdown: kramdown
+kramdown:
+  math_engine: mathjax
+  input: GFM
+  syntax_highlighter: rouge
+
+minima:
+  social_links:
+    github: shawnxu0913
+
+exclude:
+  - _tools
+  - Gemfile
+  - Gemfile.lock
+  - README.md
